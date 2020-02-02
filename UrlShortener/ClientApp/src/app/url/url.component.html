@@ -1,0 +1,12 @@
+<input type="url" name="url" class="form-control" id="kk" placeholder="url" [(ngModel)]="url" pattern="https?://.+"
+  #urlModel="ngModel">
+<div *ngIf="urlModel.invalid" class="invalid-text">
+  <div *ngIf="urlModel.errors.required">Site is required</div>
+  <div *ngIf="urlModel.errors.pattern">Must be a valid site URL</div>
+</div>
+
+<input type="button" value="create" *ngIf="urlModel.valid" (click)="createShortUrl()">
+
+<p *ngIf="urlModel.valid"> 
+  Your url is = {{shortUrl}}
+</p>

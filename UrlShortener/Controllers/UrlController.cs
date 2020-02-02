@@ -24,42 +24,37 @@ namespace UrlShortener.Controllers
 
         [HttpPost]
         [Route("Search")]
-        public ActionResult<UrlDTO> Get(UrlDTO url)
+        public ActionResult<UrlDTO> Search(UrlDTO url)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
-            
+
             var urlService = new UrlService();
             var idhash = urlService.Decode(url.Url);
-            var result = _dbContext.Urls.Where(idhash => idhash.IdHash == idhash.IdHash)
-                ?.Select(x=>x.LongUrl)
+            var result = _dbContext.Urls.Where(x => x.IdHash == idhash)
+                ?.Select(x => x.LongUrl)
                 ?.FirstOrDefault();
 
-            return new UrlDTO() { Url= result };
+            return new UrlDTO() { Url = result };
         }
 
-        //[HttpPost]
-        //public ActionResult<Url> Create(XZ URLRG)
-        //{
-        //    if (URLRG == null)
-        //        return BadRequest();
+        [HttpPost]
+        [Route("Create")]
+        public async Task<ActionResult<UrlDTO>> Create(UrlDTO urlDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest();
 
-        //    var uri = new Uri(URLRG.URLRG);
-        //    var result = _context.Url.Where(x => x.LongUl == uri.ToString())?.FirstOrDefault();
-        //    if (result != null)
-        //        return result;
-        //    var url = new Url
-        //    {
-        //        LongUl = uri.ToString()
-        //    };
+            var url = new Url
+            {
+                LongUrl = urlDto.Url
+            };
 
-        //    _context.Url.Add(url);
-        //    _context.SaveChanges();
-        //    var helper = new UrlHelper();
-        //    url.ShortUrl = helper.Encode(url.IdHash);
-        //    _context.SaveChanges();
-        //    return url;
-
-        //}
+            await _dbContext.Urls.AddAsync(url);
+            await _dbContext.SaveChangesAsync();
+            var urlService = new UrlService();
+            var shortUrl = urlService.Encode(url.IdHash);
+            return new UrlDTO() { Url = shortUrl };
+        }
     }
 }
