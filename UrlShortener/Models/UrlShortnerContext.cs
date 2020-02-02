@@ -6,6 +6,7 @@ namespace UrlShortener.Models
 {
     public partial class UrlShortnerContext : DbContext
     {
+        public DbSet<Url> Urls { get; set; }
         public UrlShortnerContext()
         {
         }

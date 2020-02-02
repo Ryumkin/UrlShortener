@@ -17,6 +17,6 @@ namespace UrlShortener.Models
         public int IdHash { get; set; }
 
         [Required]
-        public string LongUl { get; set; }
+        public string LongUrl { get; set; }
     }
 }
